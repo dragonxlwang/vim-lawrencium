@@ -93,6 +93,10 @@ function! lawrencium#find_repo_root(path)
         let l:previous_path = l:path
         let l:path = fnamemodify(l:path, ':h')
     endwhile
+    let l:path = trim(system('hg root 2>/dev/null'))
+    if len(l:path) > 0
+      return l:path
+    endif
     call lawrencium#throw("No Mercurial repository found above: " . a:path)
 endfunction
 
@@ -140,7 +144,7 @@ function! lawrencium#parse_lawrencium_path(lawrencium_path, ...)
         endif
         execute 'cd! -'
     endif
-    
+
     let l:result = { 'root': l:root_dir, 'path': l:repo_path, 'action': l:action, 'value': l:value }
     return l:result
 endfunction
